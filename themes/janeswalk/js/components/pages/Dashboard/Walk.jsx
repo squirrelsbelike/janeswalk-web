@@ -10,13 +10,19 @@ class Walk extends React.Component {
   constructor(props) {
     super(props);
     Object.assign(this, {
+      state: { published: props.published },
       handleUnpublish: () => {
         const path = this.props.url.split('.org')[1];
 
         fetch(path, { method: 'delete' })
         .then(res => res.json())
-        .then(json => console.log(json))
-        .catch(error => console.log(`Error unpublishing walk: ${error.message}`));
+        .then(({ error, message }) => {
+          if (error) {
+            throw Error(message);
+          }
+          this.setState({ published: false });
+        })
+        .catch(error => console.error(`Error unpublishing walk: ${error.message}`));
       },
     });
   }
@@ -29,9 +35,12 @@ class Walk extends React.Component {
       id,
       team,
       url,
-      published,
       canEdit = false,
     } = this.props;
+
+    const {
+      published,
+    } = this.state;
 
     return (
       <li key={id}>

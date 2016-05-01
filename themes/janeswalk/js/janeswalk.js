@@ -10380,15 +10380,22 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Walk).call(this, props));
 
 	    Object.assign(_this, {
+	      state: { published: props.published },
 	      handleUnpublish: function handleUnpublish() {
 	        var path = _this.props.url.split('.org')[1];
 
 	        fetch(path, { method: 'delete' }).then(function (res) {
 	          return res.json();
-	        }).then(function (json) {
-	          return console.log(json);
+	        }).then(function (_ref) {
+	          var error = _ref.error;
+	          var message = _ref.message;
+
+	          if (error) {
+	            throw Error(message);
+	          }
+	          _this.setState({ published: false });
 	        }).catch(function (error) {
-	          return console.log('Error unpublishing walk: ' + error.message);
+	          return console.error('Error unpublishing walk: ' + error.message);
 	        });
 	      }
 	    });
@@ -10407,9 +10414,9 @@
 	      var id = _props.id;
 	      var team = _props.team;
 	      var url = _props.url;
-	      var published = _props.published;
 	      var _props$canEdit = _props.canEdit;
 	      var canEdit = _props$canEdit === undefined ? false : _props$canEdit;
+	      var published = this.state.published;
 
 
 	      return React.createElement(
